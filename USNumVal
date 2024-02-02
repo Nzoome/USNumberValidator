@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Telephone Number Validator</title>
+    <style>
+        body{
+        background-color: #808080;
+        }
+  
+        h1{
+            color: white;
+            font-family: helvetica;
+            margin-top: 40px;
+            font-size: 45px;
+            text-align: center;
+        }
+        
+        #top{
+            display: block;
+        }
+        
+        #mid{
+            display: block;
+        }
+        
+        #bott{
+            display: bott;
+        }
+        
+        #phone{
+            background-color:#CD5C5C;
+            text-align: center;
+            height: 450px;
+            width: 350px;
+            margin-bottom: 100px;
+            border-radius: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-top: 25px;
+        }
+        
+        #screen{
+            background-color: #FFF0F5;
+            height: 80%;
+            width: 70%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        p{
+            font-size: 25;
+            font-family: helvetica;
+            padding-top: 30px
+        }
+        
+        #user-input{
+            text-align: center;
+            height: 27.5px;
+            border: solid 3px;
+            border-radius: 10px;
+        }
+        
+        button{
+            width: 90px;
+            height: 30px;
+            margin: 20px 7.5px;
+            font-size: 20px;
+            border: solid 3px;
+            border-radius: 10px
+        }
+        
+        #results-div{
+            margin-top: 45px;
+            font-family: helvetica;
+        }
+    </style>
+  </head>
+  <body>
+    <main id="background">
+      <h1><span id="top">United States</span> <span id="mid">Telephone Number</span> <span id="bott">Validator</span></h1>
+      <div id="phone">
+        <div id="screen">
+          <p id="instruction">Enter a phone number:</p>
+          <input id="user-input"/>
+          <div id="results-div"></div>
+        </div>
+        <button id="check-btn">Check</button>
+        <button id="clear-btn">Clear</button>
+      </div>
+    </main>
+  </body>
+  <script>
+        const userInput = document.getElementById("user-input");
+        const checkBtn = document.getElementById("check-btn");
+        const clearBtn = document.getElementById("clear-btn");
+        const resultsDiv = document.getElementById("results-div");
+        const numRegex = /[0-9]/;
+        const countryRegex = /(1|1 )/;
+        const areaRegex = /\([0-9]{3}\)|[0-9]{3}/;
+        const officeRegex = /(-| )?[0-9]{3}/;
+        const subRegex = /(-| )?[0-9]{4}/;
+        const formatRegex = /^(1|1 )?\([0-9]{3}\)|[0-9]{3}(-| )?[0-9]{3}(-| )?[0-9]{4}$/;
+        const clParRegex = /\)/;
+        const opParRegex = /\(/;
+        const dashRegex = /-/;
+
+        const placeSpacePar = (telNum) => {
+        for(let i = 0; i < telNum.length; i++){
+            if(clParRegex.test(telNum[i])){
+            if(dashRegex.test(telNum[i + 1])){
+                resultsDiv.textContent = "Invalid US number: " + telNum;
+            }else{
+                resultsDiv.textContent = "Valid US number: " + telNum;
+            }
+            };
+        };
+        };
+
+        const checkPar = (telNum) => {
+        let opPar = 0;
+        let clPar = 0;
+        for(let i = 0; i < telNum.length; i++){
+            if(opParRegex.test(telNum[i])){
+            opPar += 1;
+            }else if(clParRegex.test(telNum[i])){
+            clPar += 1;
+            };
+        }
+        if(opPar !== clPar){
+            resultsDiv.textContent = "Invalid US number: " + telNum;
+        }else if(opPar > 1 || clPar > 1){
+            resultsDiv.textContent = "Invalid US number: " + telNum;
+        }else if(opPar === 0 && clPar === 0){
+            resultsDiv.textContent = "Valid US number: " + telNum;
+        }else{
+            placeSpacePar(telNum)
+        }
+        };
+
+        const checkNumFormat = (telNum) => {
+        if(formatRegex.test(telNum)){
+            checkPar(telNum);
+        }else{
+            resultsDiv.textContent = "Invalid US number: " + telNum;
+        };
+        };
+
+        const checkInput = () => {
+        const telNum = userInput.value;
+        if(telNum.length === 0){
+            alert("Please provide a phone number");
+        }else{
+            let numNums = 0;
+            for(let i = 0; i < telNum.length; i++){
+            if(numRegex.test(telNum[i])){
+                numNums += 1;
+            };
+            }if(numNums >= 10 && numNums < 12){
+            if(numNums === 11){
+                if(telNum[0] !== "1"){
+                resultsDiv.textContent = "Invalid US number: " + telNum;
+                }else{
+                checkNumFormat(telNum);
+                }
+            }else{
+                checkNumFormat(telNum);
+            }
+        }else{
+            resultsDiv.textContent = "Invalid US number: " + telNum;
+            };
+        };
+        };
+
+        const clearRes = () => {
+        resultsDiv.textContent = "";
+        userInput.value = "";
+        };
+
+        clearBtn.addEventListener("click", clearRes);
+
+        checkBtn.addEventListener("click", checkInput);
+
+        userInput.addEventListener("keydown", (e) => {
+        if(e.key === "Enter"){
+            checkInput();
+        };
+        });
+  </script>
+</html>
